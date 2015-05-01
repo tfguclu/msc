@@ -1,0 +1,8 @@
+set everyone [atomselect top all]
+measure minmax $everyone
+min-max without negative
+measure center $everyone
+as it is (neg or pos)
+package require solvate
+solvate structure.psf structure.pdb -t 10 -o structure_wb
+

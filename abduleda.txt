@@ -1,0 +1,75 @@
+#!/usr/bin/env python
+
+filename = raw_input('Enter a file name: ')
+
+from prody import *
+from pylab import *
+import numpy
+
+vhl = parsePDB(str(filename)+".pdb")
+
+dcd = DCDFile(str(filename)+".dcd")
+dcd.link(vhl)
+dcd.setAtoms(vhl.calpha)
+
+eda_trajectory = EDA('pVHL Trajectory')
+eda_trajectory.buildCovariance( dcd )
+eda_trajectory.calcModes()
+
+saveModel(eda_trajectory, str(filename)+"_all", matrices=True)
+
+writeArray("eda_eigvalues.txt", eda_trajectory.getEigvals(), format="%8.10f")
+writeArray("eda_eigv1.txt", eda_trajectory[0].getArray(), format="%8.10f")
+writeArray("eda_eigv2.txt", eda_trajectory[1].getArray(), format="%8.10f")
+writeArray("eda_eigv3.txt", eda_trajectory[2].getArray(), format="%8.10f")
+writeArray("eda_eigv4.txt", eda_trajectory[3].getArray(), format="%8.10f")
+writeArray("eda_eigv5.txt", eda_trajectory[4].getArray(), format="%8.10f")
+writeArray("eda_eigv6.txt", eda_trajectory[5].getArray(), format="%8.10f")
+writeArray("eda_eigv7.txt", eda_trajectory[6].getArray(), format="%8.10f")
+writeArray("eda_eigv8.txt", eda_trajectory[7].getArray(), format="%8.10f")
+writeArray("eda_eigv9.txt", eda_trajectory[8].getArray(), format="%8.10f")
+writeArray("eda_eigv10.txt", eda_trajectory[9].getArray(), format="%8.10f")
+
+
+sq1 = calcSqFlucts(eda_trajectory[0])
+sq2 = calcSqFlucts(eda_trajectory[1])
+sq3 = calcSqFlucts(eda_trajectory[2])
+sq4 = calcSqFlucts(eda_trajectory[3])
+sq5 = calcSqFlucts(eda_trajectory[4])
+
+numpy.savetxt('sq1.txt',sq1, fmt='%8.10f')
+numpy.savetxt('sq2.txt',sq2, fmt='%8.10f')
+numpy.savetxt('sq3.txt',sq3, fmt='%8.10f')
+numpy.savetxt('sq4.txt',sq4, fmt='%8.10f')
+numpy.savetxt('sq5.txt',sq5, fmt='%8.10f')
+
+cc = calcCrossCorr(eda_trajectory)
+numpy.savetxt('cc_'+str(filename)+'.txt',cc, fmt='%8.10f')
+
+def showCrossCorrs(modes, *args, **kwargs):
+    """Show cross-correlations using :func:`~matplotlib.pyplot.imshow`.  By
+    default, *origin=lower* and *interpolation=bilinear* keyword  arguments
+    are passed to this function, but user can overwrite these parameters.
+    See also :func:`.calcCrossCorr`."""
+
+    import matplotlib.pyplot as plt
+    arange = np.arange(modes.numAtoms())
+    cross_correlations = np.zeros((arange[-1]+2, arange[-1]+2))
+    cross_correlations[arange[0]+1:,
+                       arange[0]+1:] = calcCrossCorr(modes)
+    if not 'interpolation' in kwargs:
+        kwargs['interpolation'] = 'bilinear'
+    if not 'origin' in kwargs:
+        kwargs['origin'] = 'lower'
+    show = plt.imshow(cross_correlations, *args, **kwargs), plt.colorbar()
+    plt.axis([arange[0]+0.5, arange[-1]+1.5, arange[0]+0.5, arange[-1]+1.5])
+    return show
+
+showCrossCorrs(eda_trajectory[0:10])
+#showCrossCorr(eda_trajectory[0:10])
+
+savefig("cc_"+str(filename)+"10", dpi=300, bbox_inches='tight')
+
+raw_input() 
+
+

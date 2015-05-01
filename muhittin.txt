@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+
+from prody import *
+from pylab import *
+import numpy
+
+vhl = parsePDB("d_6ns_cut.pdb")
+
+vhl = vhl.select('all')
+
+anm = loadModel("dmut_6ns_cut_all.anm.npz")
+
+anm_slc, slc = sliceModel(anm, vhl, "calpha")
+
+writePDB("dmut_6ns_slc.pdb", slc)
+
+writeArray("anm_eigvalues.txt", anm_slc.getEigvals(), format="%8.10f")
+writeArray("anm_eigv1.txt", anm_slc[0].getArray(), format="%8.10f")
+writeArray("anm_eigv2.txt", anm_slc[1].getArray(), format="%8.10f")
+writeArray("anm_eigv3.txt", anm_slc[2].getArray(), format="%8.10f")
+writeArray("anm_eigv4.txt", anm_slc[3].getArray(), format="%8.10f")
+writeArray("anm_eigv5.txt", anm_slc[4].getArray(), format="%8.10f")
+writeArray("anm_eigv6.txt", anm_slc[5].getArray(), format="%8.10f")
+writeArray("anm_eigv7.txt", anm_slc[6].getArray(), format="%8.10f")
+writeArray("anm_eigv8.txt", anm_slc[7].getArray(), format="%8.10f")
+writeArray("anm_eigv9.txt", anm_slc[8].getArray(), format="%8.10f")
+writeArray("anm_eigv10.txt", anm_slc[9].getArray(), format="%8.10f")
+
+
+sq1 = calcSqFlucts(anm_slc[0])
+sq2 = calcSqFlucts(anm_slc[1])
+sq3 = calcSqFlucts(anm_slc[2])
+sq4 = calcSqFlucts(anm_slc[3])
+sq5 = calcSqFlucts(anm_slc[4])
+
+numpy.savetxt('sq1.txt',sq1, fmt='%8.10f')
+numpy.savetxt('sq2.txt',sq2, fmt='%8.10f')
+numpy.savetxt('sq3.txt',sq3, fmt='%8.10f')
+numpy.savetxt('sq4.txt',sq4, fmt='%8.10f')
+numpy.savetxt('sq5.txt',sq5, fmt='%8.10f')
+
+cc = calcCrossCorr(anm_slc[0:10])
+numpy.savetxt('cc_dmut_6ns_10.txt',cc, fmt='%8.10f')
+
+showCrossCorr(anm_slc[0:10])
+
+raw_input() 

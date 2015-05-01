@@ -1,0 +1,49 @@
+
+
+anm_slc, slc = sliceModel(anm, vhl, "calpha")
+
+
+writeArray("mut_anm_eigv1.txt", anm_slc[0].getArray(), format="%8.10f")
+
+import numpy
+
+sq = calcSqFlucts(anm_slc[0])
+numpy.savetxt('sq1.txt',sq, fmt='%8.10f')
+
+
+
+showCrossCorr(anm_slc);
+
+
+cc = calcCrossCorr(anm_slc)
+numpy.savetxt('cc_nat_7ns.txt',cc, fmt='%8.10f')
+
+writeNMD("nat_7ns.nmd", anm_slc, slc)
+
+
+saveModel(anm, "nat_7ns_cut_all", matrices=True)
+loadModel(filename)
+
+writePDB("nat_8ns.pdb", slc)
+writePDB("n_6ns_slc.pdb", slc)
+
+cluster.pl -kclust -mode rmsd -lsqfit -radius 1.5 *.pdb > data
+
+cluster.pl -kclust -mode rmsd -selmode heavy -iterate -lsqfit -log cluster.log -radius 1.5 *.pdb > data
+
+kclust -mode rmsd -centroid -cdist -heavy -lsqfit -radius 1.0 -maxerr 1 -iterate clustfils > centroid_1.0
+find . -type f | wc -l
+
+prody catdcd 1LM8_modified_checked_autopsf_D179N_Y98N_wb_min_15ns.dcd 1LM8_modified_checked_autopsf_D179N_Y98N_wb_min_15ns_20ns.dcd 1LM8_modified_checked_autopsf_D179N_Y98N_wb_min_15ns_20ns_50ns.dcd --psf ionized.psf -s protein -o dmut250ns_dry.dcd
+
+
+checkin.pl -dcd nat_min.pdb nat50ns_dry.dcd -dir ens traj
+enscluster.pl -dir ens -kclust -mode rmsd -selmode heavy -iterate -lsqfit -radius 2 traj
+showcluster.pl -dir ens traj
+ensfiles.pl -cluster t.1 -dir ens traj
+ensfiles.pl -cluster t.1 -dir ens traj | sort -k 2 -n | head -1
+
+set sel [atomselect top "segname P1"] 
+$sel writepsf test.psf
+$sel writepdb test.pdb
+
