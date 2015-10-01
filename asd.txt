@@ -1,0 +1,3 @@
+find /media/tguclu/System/Users/suuser/Desktop/dhfr_project/covariance/cov_cont -name '*.png' -exec cp {} /media/tguclu/System/Users/suuser/Desktop/dhfr_project/covariance/corr_graphs  \;
+
+find . -type f -name "*.txt"
