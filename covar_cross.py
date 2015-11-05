@@ -9,9 +9,9 @@ import os
 from os import *
 
 chunk_start = 5010
-chunk_end = 15010
+chunk_end = 25010
 ref_frame = chunk_start
-file_suffix = "_10_30"
+file_suffix = "_10_50"
 
 for file in os.listdir('.'):
     if fnmatch.fnmatch(file, '*.pdb'):
@@ -29,7 +29,7 @@ traj.link(system)
 
 frames = traj[int(chunk_start):int(chunk_end)]
 
-refFrame = traj[5010]
+refFrame = traj[int(ref_frame)]
 
 frames.setCoords(refFrame.getCoords())
 
@@ -70,3 +70,5 @@ savefig("cc_"+str(os.path.splitext(dcd)[0])+str(file_suffix), dpi=300, bbox_inch
 
 plt.clf()
 plt.close()
+
+print("chunk start "+str(chunk_start)+" "+"chunk end "+str(chunk_end)+" "+"ref frame "+str(ref_frame))
