@@ -26,8 +26,6 @@ traj.link(system)
 
 frames1 = traj[5010:25010]
 
-frames1.setCoords(traj[5009].getCoords())
-
 eda1 = EDA('')
 
 eda1.buildCovariance(frames1)
