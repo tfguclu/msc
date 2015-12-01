@@ -47,3 +47,10 @@ set sel [atomselect top "segname P1"]
 $sel writepsf test.psf
 $sel writepdb test.pdb
 
+dot product :
+
+matrix.reshape(1,x^2)
+
+mag_cov1 = np.linalg.norm(cov1)
+
+((cov1*cov2)/(mag_cov1*mag_cov2)).sum()
