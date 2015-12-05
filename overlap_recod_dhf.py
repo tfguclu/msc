@@ -10,13 +10,13 @@ from os import *
 import matplotlib.pyplot as plt
 
 reference_eda = loadModel('1rx2_ndph_dhf_calpha_50_90.eda.npz')
-reference_modes = reference_eda[:5]
+reference_modes = reference_eda[:10]
 
 for file in os.listdir('.'):
     if fnmatch.fnmatch(file, '*dhf*.eda.npz'):
         compared_eda_file = file
         compared_eda = loadModel(str(compared_eda_file))
-        compared_modes = compared_eda[:5]
+        compared_modes = compared_eda[:10]
         overlap = abs(calcOverlap(reference_modes, compared_modes))
         if overlap.ndim == 0:
             overlap = np.array([[overlap]])
